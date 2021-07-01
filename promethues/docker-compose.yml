@@ -1,0 +1,22 @@
+version: '3'
+
+services:
+  prometheus:
+    image: prom/prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus:/etc/prometheus
+    networks:
+      - prom
+
+  nats-exporter:
+    image: synadia/prometheus-nats-exporter:latest
+    #ports:
+    #  - "7777:7777"
+    command: "http://10.1.1.185:31002"
+    networks:
+      - prom
+
+networks:
+  prom:

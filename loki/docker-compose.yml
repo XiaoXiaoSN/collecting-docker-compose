@@ -1,0 +1,40 @@
+version: "3"
+
+services:
+  grafana:
+    image: grafana/grafana:master
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./.data:/var/lib/grafana
+      - ./grafana/provisioning/:/etc/grafana/provisioning/
+    environment:
+      # - GF_SERVER_ROOT_URL=http://grafana.loc
+      - GF_SERVER_ROUTER_LOGGING=true
+      - GF_LOG_CONSOLE_FORMAT=json
+      # - GF_LOG_FILTERS=alerting.notifier:debug,alerting.notifier.slack:debug,auth:debug
+    links:
+      - loki
+      - fluentd
+
+  loki:
+    image: grafana/loki:latest
+    ports:
+      - "3100:3100"
+    command: -config.file=/etc/loki/local-config.yaml
+
+  fluentd:
+    image: grafana/fluent-plugin-loki:master
+    ports:
+      - "9880:9880"
+      - "24224:24224"
+      - "24224:24224/udp"
+    volumes:
+      - ./fluentd/:/fluentd/etc/
+    #   - ./.data/log:/var/log
+    environment:
+      FLUENT_UID: 0
+      LOKI_URL: http://loki:3100
+    links:
+      - loki
+
