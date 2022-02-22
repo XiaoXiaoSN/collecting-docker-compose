@@ -1,0 +1,15 @@
+# https://yingclin.github.io/2018/create-oracle-docker-container.html
+
+version: "2"
+services:
+  database:
+    # Need to register on docker hub, and login on docker cli
+    image: store/oracle/database-enterprise:12.2.0.1
+    volumes:
+      - ./.data/oracle/oradata:/opt/oracle/oradata # persistent oracle database data.
+    environment:
+      - ORACLE_ALLOW_REMOTE=true
+    ports:
+      - 1521:1521
+      - 8080:8080
+      - 5500:5500
