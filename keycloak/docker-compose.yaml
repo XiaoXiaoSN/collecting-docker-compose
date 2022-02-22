@@ -1,0 +1,32 @@
+# docker run -p 8080:8080 -e KEYCLOAK_USER=admin -e KEYCLOAK_PASSWORD=admin quay.io/keycloak/keycloak:15.1.0
+# https://hub.docker.com/r/jboss/keycloak/
+
+version: "3"
+
+services:
+  keycloak:
+    image: quay.io/keycloak/keycloak:15.1.0
+    environment:
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: admin
+      DB_VENDOR: POSTGRES
+      DB_ADDR: postgres
+      DB_DATABASE: keycloak
+      DB_USER: keycloak
+      DB_PASSWORD: password
+      # https://stackoverflow.com/a/61621524/6695https://stackoverflow.com/a/61621524/66952744
+      JAVA_OPTS_APPEND: "-Dkeycloak.profile.feature.scripts=enabled -Dkeycloak.profile.feature.upload_scripts=enabled"
+    depends_on:
+      - postgres
+    ports:
+      - 8080:8080
+  postgres:
+    image: postgres:13
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: password
+    volumes:
+      - ./.data/pg:/var/lib/postgresql/data
+    ports:
+      - 54321:5432
