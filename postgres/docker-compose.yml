@@ -1,0 +1,23 @@
+version: "3"
+services:
+  pg:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: saffron_dev_owner_user
+      POSTGRES_PASSWORD: Kalf3QietbH4P9MXRLIVTusxw9ext4Dy61QQIy5DhXUIQ95za1LKiBSMAokAq6QQ
+      POSTGRES_DB: saffron_dev
+    volumes:
+      - ./.data/pg:/var/lib/postgresql/data
+      # - ./initdb/iam:/docker-entrypoint-initdb.d
+    ports:
+      - 5432:5432
+
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
+    volumes:
+      - ./.data/pgadmin:/var/lib/postgresql/data
+    ports:
+      - "${PGADMIN_PORT:-5050}:80"
